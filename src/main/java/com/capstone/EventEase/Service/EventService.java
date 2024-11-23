@@ -100,7 +100,8 @@ public class EventService {
             throw new EntityNotFoundException("User Not Found!");
         }
         event.setCreatedBy(userCreator.getFirstName());
-        validateEventDates(event);
+        validateEventDatesCreated(event);
+
 
         Event newEvent = eventRepository.save(event);
         List<EmailSendRequestDTO> emails = new ArrayList<>();
@@ -176,6 +177,39 @@ public class EventService {
 
 
  */
+
+    private void validateEventDatesCreated(Event newEvent) {
+        ZonedDateTime currentDateTime = ZonedDateTime.now(UTC_8);
+        ZonedDateTime eventStart = newEvent.getEventStarts().atZoneSameInstant(UTC_8);
+        ZonedDateTime eventEnd = newEvent.getEventEnds().atZoneSameInstant(UTC_8);
+
+        // Validate event isn't in the past
+        if (eventStart.isBefore(currentDateTime)) {
+            throw new DateTimeException("Event cannot start in the past.");
+        }
+
+        // Validate event end is after start
+        if (eventEnd.isBefore(eventStart)) {
+            throw new DateTimeException("Event cannot end before it starts.");
+        }
+
+        // Check for overlaps with existing events
+        List<Event> existingEvents = eventRepository.findAll();
+        for (Event existingEvent : existingEvents) {
+            ZonedDateTime existingStart = existingEvent.getEventStarts().atZoneSameInstant(UTC_8);
+            ZonedDateTime existingEnd = existingEvent.getEventEnds().atZoneSameInstant(UTC_8);
+
+            // Check for overlaps using the same logic as in update
+            boolean overlap = (eventStart.isBefore(existingEnd) && eventEnd.isAfter(existingStart)) ||
+                    (existingStart.isBefore(eventEnd) && existingEnd.isAfter(eventStart));
+
+            if (overlap) {
+                throw new DateTimeException("Event overlaps with an existing event.");
+            }
+        }
+    }
+
+
 
 
     private void validateEventDates(Event newEvent, Long updatingEventId) {
