@@ -7,8 +7,8 @@ spring:
 
 
     url: ${dburl}
-    username:  ${dbusername}
-    password:  ${dbpassword}
+    username:  ${dbUsername}
+    password:  ${dbPassword}
     driver-class-name: org.postgresql.Driver
 
 
@@ -24,13 +24,11 @@ spring:
 
 
 
-
-
   mail:
     host:  smtp.gmail.com
     port: 587
-    username: ${useremail}
-    password: ${userpassword}
+    username: ${userEmail}
+    password: ${userPassword}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
