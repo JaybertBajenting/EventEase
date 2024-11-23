@@ -52,3 +52,12 @@ security:
 
 app:
   url: ${appUrl}
+
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    disable-swagger-default-url: true
+  api-docs:
+    path: /v3/api-docs
