@@ -178,8 +178,7 @@ public class EventService {
  */
 
 
-
-    private void validateEventDates(Event newEvent) {
+    private void validateEventDates(Event newEvent, Long updatingEventId) {
         ZonedDateTime currentDateTime = ZonedDateTime.now(UTC_8);
         ZonedDateTime eventStart = newEvent.getEventStarts().atZoneSameInstant(UTC_8);
         ZonedDateTime eventEnd = newEvent.getEventEnds().atZoneSameInstant(UTC_8);
@@ -194,9 +193,15 @@ public class EventService {
 
         List<Event> existingEvents = eventRepository.findAll();
         for (Event existingEvent : existingEvents) {
+            // Skip the event being updated
+            if (existingEvent.getId().equals(updatingEventId)) {
+                continue;
+            }
+
             ZonedDateTime existingStart = existingEvent.getEventStarts().atZoneSameInstant(UTC_8);
             ZonedDateTime existingEnd = existingEvent.getEventEnds().atZoneSameInstant(UTC_8);
 
+            // Check for overlaps
             boolean overlap = (eventStart.isBefore(existingEnd) && eventEnd.isAfter(existingStart)) ||
                     (existingStart.isBefore(eventEnd) && existingEnd.isAfter(eventStart));
 
@@ -205,8 +210,6 @@ public class EventService {
             }
         }
     }
-
-
 
 
     private User createUser(String username, List<String> passwords) {
@@ -296,7 +299,9 @@ public class EventService {
         ZonedDateTime eventStart = oldEvent.getEventStarts().atZoneSameInstant(UTC_8);
         ZonedDateTime eventEnd = oldEvent.getEventEnds().atZoneSameInstant(UTC_8);
 
-        validateEventDates(event);
+        if (event.getEventStarts() != null || event.getEventEnds() != null) {
+            validateEventDates(event, eventId);
+        }
 
 
         if(currentDate.isAfter(eventStart) && currentDate.isBefore(eventEnd)){
@@ -331,8 +336,6 @@ public class EventService {
         if (event.getAllowedGender() != null) {
             oldEvent.setAllowedGender(event.getAllowedGender());
         }
-
-
 
         Event updatedEvent = eventRepository.save(oldEvent);
 
