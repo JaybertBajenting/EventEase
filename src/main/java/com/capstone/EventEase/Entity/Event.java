@@ -7,11 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+
+
 
 @Data
 @Builder
@@ -19,22 +24,19 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_event")
-
-
-
-
-
 public class Event {
 
-
-
+    /*
+    implements Serializable
+    @Serial
+    private static final long serialVersionUID = 1L;
+    */
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String eventName;
-
-
 
     @Column(length = 100000)
     private String eventDescription;
@@ -72,6 +74,8 @@ public class Event {
     @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "BYTEA")
     private byte[] eventPicture;
+
+
 
 
 

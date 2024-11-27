@@ -11,11 +11,15 @@ import com.capstone.EventEase.Service.EventService;
 import com.capstone.EventEase.Service.ImageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.mail.SendFailedException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -40,7 +45,20 @@ public class EventController {
 
     private final ImageService imageService;
 
-    private final ObjectMapper objectMapper;
+
+
+
+    @GetMapping("/event/getEventNow")
+    public ResponseEntity<?> getEventNow(){
+        return ResponseEntity.ok(eventService.getEventByNow());
+    }
+
+
+
+
+
+
+
 
 
     @Operation(summary = "CREATE AN EVENT")
@@ -259,12 +277,10 @@ public class EventController {
 
 
 
-    @GetMapping("/getEventNow")
-    public ResponseEntity<?> getEventNow(){
-            return ResponseEntity.ok(eventService.getEventByNow());
-    }
 
-    
+
+
+
 
 @GetMapping("/greet")
     public String greet(){

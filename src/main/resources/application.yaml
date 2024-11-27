@@ -4,16 +4,18 @@ server:
 
 spring:
   datasource:
-    url: ${dburl}
-    username:  ${dbUsername}
-    password:  ${dbPassword}
-    driver-class-name: org.postgresql.Driver
-
-#
-#    url: jdbc:postgresql://localhost:5432/eventeasedb
-#    username: postgres
-#    password: root
+#    url: ${dburl}
+#    username:  ${dbUsername}
+#    password:  ${dbPassword}
 #    driver-class-name: org.postgresql.Driver
+
+
+
+
+    url: jdbc:postgresql://localhost:5432/eventeasedb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
 
   mail:
     host:  smtp.gmail.com
@@ -61,3 +63,40 @@ springdoc:
     disable-swagger-default-url: true
   api-docs:
     path: /v3/api-docs
+
+
+  cache:
+    type: caffeine
+    cache-names: bucket4j-cache
+
+#
+#
+#bucket4j:
+#  enabled: true
+#  filters:
+#    - cache-name: bucket4j-cache
+#      url: .*
+#      http-status-code: TOO_MANY_REQUESTS
+#      http-response-body: "{ \"error\": true, \"message\": \"You have exhausted your API Request Quota\" }"
+#      rate-limits:
+#        - cache-key: getRemoteAddr()
+#          bandwidths:
+#            - capacity: 100
+#              time: 1
+#              unit: minutes
+
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: bucket4j-cache
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-response-body: "{ \"error\": true, \"message\": \"You have exhausted your API Request Quota\" }"
+      rate-limits:
+        - cache-key: getRemoteAddr()
+          bandwidths:
+            - capacity: 100
+              time: 1
+              unit: minutes
+

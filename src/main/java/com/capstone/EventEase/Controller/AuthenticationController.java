@@ -19,6 +19,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -83,12 +84,13 @@ public class AuthenticationController {
         return new ResponseEntity<>(attendanceService.counterAttendance(eventId),HttpStatus.OK);
     }
 
+
+
+  //  @Cacheable("general-cache")
     @GetMapping("/event/getAllEvents")
     public List<Event> getAllEvents(){
         return eventService.getAllEvents();
     }
-
-
 
 
 
