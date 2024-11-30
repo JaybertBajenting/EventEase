@@ -4,18 +4,16 @@ server:
 
 spring:
   datasource:
-#    url: ${dburl}
-#    username:  ${dbUsername}
-#    password:  ${dbPassword}
-#    driver-class-name: org.postgresql.Driver
-
-
-
-
-    url: jdbc:postgresql://localhost:5432/eventeasedb
-    username: postgres
-    password: root
+    url: ${dburl}
+    username:  ${dbUsername}
+    password:  ${dbPassword}
     driver-class-name: org.postgresql.Driver
+
+
+#    url: jdbc:postgresql://localhost:5432/eventeasedb
+#    username: postgres
+#    password: root
+#    driver-class-name: org.postgresql.Driver
 
   mail:
     host:  smtp.gmail.com
@@ -27,17 +25,17 @@ spring:
       mail.smtp.starttls.enable: true
 
 
-    servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 
 

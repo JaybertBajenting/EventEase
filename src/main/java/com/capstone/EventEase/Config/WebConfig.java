@@ -13,12 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 
 
+
 @Configuration
 @EnableWebSecurity
 public class WebConfig implements WebMvcConfigurer{
-
-
-
 
 
     @Override
