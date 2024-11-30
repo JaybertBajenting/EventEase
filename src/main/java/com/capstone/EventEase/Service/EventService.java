@@ -36,6 +36,7 @@ import java.time.*;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -100,7 +101,7 @@ public class EventService {
             throw new EntityNotFoundException("User Not Found!");
         }
         event.setCreatedBy(userCreator.getFirstName());
-        validateEventDates(event);
+        validateEventDatesCreate(event);
 
         Event newEvent = eventRepository.save(event);
         List<EmailSendRequestDTO> emails = new ArrayList<>();
@@ -179,7 +180,7 @@ public class EventService {
 
 
 
-    private void validateEventDates(Event newEvent) {
+    private void validateEventDatesCreate(Event newEvent) {
         ZonedDateTime currentDateTime = ZonedDateTime.now(UTC_8);
         ZonedDateTime eventStart = newEvent.getEventStarts().atZoneSameInstant(UTC_8);
         ZonedDateTime eventEnd = newEvent.getEventEnds().atZoneSameInstant(UTC_8);
@@ -196,6 +197,36 @@ public class EventService {
         for (Event existingEvent : existingEvents) {
             ZonedDateTime existingStart = existingEvent.getEventStarts().atZoneSameInstant(UTC_8);
             ZonedDateTime existingEnd = existingEvent.getEventEnds().atZoneSameInstant(UTC_8);
+
+            boolean overlap = (eventStart.isBefore(existingEnd) && eventEnd.isAfter(existingStart)) ||
+                    (existingStart.isBefore(eventEnd) && existingEnd.isAfter(eventStart));
+
+            if (overlap) {
+                throw new DateTimeException("Event overlaps with an existing event.");
+            }
+        }
+    }
+
+    private void validateEventDates(Event newEvent, Event existingEvent) {
+        ZonedDateTime currentDateTime = ZonedDateTime.now(UTC_8);
+        ZonedDateTime eventStart = newEvent.getEventStarts().atZoneSameInstant(UTC_8);
+        ZonedDateTime eventEnd = newEvent.getEventEnds().atZoneSameInstant(UTC_8);
+
+        if (eventStart.isBefore(currentDateTime)) {
+            throw new DateTimeException("Event cannot start in the past.");
+        }
+
+        if (eventEnd.isBefore(eventStart)) {
+            throw new DateTimeException("Event cannot end before it starts.");
+        }
+
+        List<Event> otherEvents = eventRepository.findAll().stream()
+                .filter(event -> !event.getId().equals(existingEvent.getId()))
+                .toList();
+
+        for (Event event : otherEvents) {
+            ZonedDateTime existingStart = event.getEventStarts().atZoneSameInstant(UTC_8);
+            ZonedDateTime existingEnd = event.getEventEnds().atZoneSameInstant(UTC_8);
 
             boolean overlap = (eventStart.isBefore(existingEnd) && eventEnd.isAfter(existingStart)) ||
                     (existingStart.isBefore(eventEnd) && existingEnd.isAfter(eventStart));
@@ -301,11 +332,18 @@ public class EventService {
         ZonedDateTime newEventEnd = event.getEventEnds().atZoneSameInstant(UTC_8);
 
 
-        if(newEventStart.equals(eventStart) && newEventEnd.equals(eventEnd)){
+
+        if (newEventStart.equals(eventStart) && newEventEnd.equals(eventEnd)) {
             System.out.println("Equals Date");
-        }else{
-            validateEventDates(event);
+        } else {
+            validateEventDates(event, oldEvent);  // Pass both new and old events
         }
+//
+//        if(newEventStart.equals(eventStart) && newEventEnd.equals(eventEnd)){
+//            System.out.println("Equals Date");
+//        }else{
+//            validateEventDates(event);
+//        }
 
         if(currentDate.isAfter(eventStart) && currentDate.isBefore(eventEnd)){
             throw new DateTimeException("Event Can't Be Updated During Event Starts");
