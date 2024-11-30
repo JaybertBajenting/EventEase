@@ -9,7 +9,7 @@ spring:
     password:  ${dbPassword}
     driver-class-name: org.postgresql.Driver
 
-#
+
 #    url: jdbc:postgresql://localhost:5432/eventeasedb
 #    username: postgres
 #    password: root

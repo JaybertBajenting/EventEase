@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -191,19 +192,24 @@ public class AuthenticationService {
 
 
     public LoginResponse loginUser(LoginRequest loginRequest) throws AccountNotEnabledException {
-        User user = userRepository.findByUsername(loginRequest.getUsername());
+        try {
+            User user = userRepository.findByUsername(loginRequest.getUsername());
+
+            if (user == null) {
+                throw new BadCredentialsException("Invalid username or password");
+            }
 
 
-        if (user == null) {
-            throw new EntityNotFoundException("User not Found!");
+            if (!user.isVerified()) {
+                throw new AccountNotEnabledException("Account Has Not Been Verified");
+            }
+
+            authenticateUser(loginRequest);
+
+            return new LoginResponse(user, jwtService.generateToken(user));
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid username or password");
         }
-        if (!user.isVerified()) {
-            throw new AccountNotEnabledException("Account Has Not Been Verified");
-        }
-
-        authenticateUser(loginRequest);
-
-        return new LoginResponse(user, jwtService.generateToken(user));
     }
 
     private void authenticateUser(LoginRequest loginRequest) {
