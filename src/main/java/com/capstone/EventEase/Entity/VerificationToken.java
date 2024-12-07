@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 public class VerificationToken {
 
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "verification_id")

@@ -215,7 +215,7 @@ public class AdminController {
     }
 
 
-    @Operation(summary = "Get All Events Joined By Event After Attendance")
+    @Operation(summary = "Get All Events Joined By User After Attendance")
     @GetMapping("/getEventsJoinedAttendance/{userId}")
     public ResponseEntity<?> getEventsJoinedAfterAttending(@PathVariable Long userId){
         try{
@@ -224,8 +224,6 @@ public class AdminController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
-
-
 
 
     @GetMapping("/hello")

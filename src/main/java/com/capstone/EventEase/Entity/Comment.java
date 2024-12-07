@@ -19,17 +19,19 @@ import java.util.UUID;
 public class Comment {
 
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "comment_id")
     private UUID id;
 
-    private Long event_id;
+    private Long eventId;
 
-    private Long user_id;
+    private Long userId;
 
     private LocalDateTime createdAt;
+
+
+    private String comment;
 
 
 }

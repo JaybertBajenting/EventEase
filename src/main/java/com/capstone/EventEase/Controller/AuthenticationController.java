@@ -94,6 +94,8 @@ public class AuthenticationController {
 
 
 
+
+
     @GetMapping("/event/getEventNow")
     public ResponseEntity<?> getEventNow(){
         return ResponseEntity.ok(eventService.getEventByNow());
@@ -269,8 +271,6 @@ public class AuthenticationController {
     public ResponseEntity<String> greet(){
         return new ResponseEntity<>("Hello World",HttpStatus.OK);
     }
-
-
 
 
 

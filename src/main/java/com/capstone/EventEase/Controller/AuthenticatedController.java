@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticatedController {
 
 
-    
     @Operation(summary = "Get the current User")
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser(){
