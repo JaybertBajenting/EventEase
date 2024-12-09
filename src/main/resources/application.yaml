@@ -85,17 +85,3 @@ springdoc:
 #              unit: minutes
 
 
-bucket4j:
-  enabled: true
-  filters:
-    - cache-name: bucket4j-cache
-      url: .*
-      http-status-code: TOO_MANY_REQUESTS
-      http-response-body: "{ \"error\": true, \"message\": \"You have exhausted your API Request Quota\" }"
-      rate-limits:
-        - cache-key: getRemoteAddr()
-          bandwidths:
-            - capacity: 100
-              time: 1
-              unit: minutes
-

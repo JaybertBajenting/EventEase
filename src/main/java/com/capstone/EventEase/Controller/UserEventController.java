@@ -71,7 +71,7 @@ public class UserEventController {
 
      //   @Tag(name = "GET")
         @Operation(summary = "Get All Users Joined To Event By Passing an EventId")
-    @GetMapping("/getAllUsersJoinedToEvent/{eventId}")
+        @GetMapping("/getAllUsersJoinedToEvent/{eventId}")
     public ResponseEntity<?> getAllUsersJoinedToEvent(@PathVariable Long eventId){
         try{
             return new ResponseEntity<>(userEventService.getAllUsersJoinedToEvent(eventId),HttpStatus.OK);
